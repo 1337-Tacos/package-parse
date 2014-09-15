@@ -12,6 +12,7 @@ public class PageParser {
 	String page;
 	Repository repo;
 	Document site;
+	Document siteDownload;
 	boolean download;
 
 	/**
@@ -40,6 +41,7 @@ public class PageParser {
 
 		//Download the download page
 		//TODO: download download page
+		downloadDownloads();
 
 		parseSize();
 		parseVersion();
@@ -116,9 +118,13 @@ public class PageParser {
 	private void parseHomepage() {
 		
 	}
+////////////////////////////////////////////////
 
+	private void downloadDownloads() {
+		this.siteDownload = ListCrawler.download(page + "/files");
+	}
 
-
+////////////////////////////////////////////////
 	private void parseVersion() {
 		//Parse Version once decided which one
 	}
