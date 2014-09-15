@@ -40,7 +40,7 @@ public class ListCrawler {
 		return Integer.parseInt(theNumber);
 	}
 	
-	private Document download(String page) {
+	private static Document download(String page) {
 		Document doc = new Document("lol?");
 		try {
 			doc = Jsoup.connect(page).get();
