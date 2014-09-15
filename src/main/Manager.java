@@ -25,9 +25,10 @@ public class Manager {
 	public void run() {
 		pages = crawler.crawl();
 		for (String page : pages) {
-			PageParser parser = new PageParser(page, repo);
-			ArrayList<MCPackage> packs = parser.parse();
-			mods.addAll(packs);
+			//TODO:  make downloading optional
+			PageParser parser = new PageParser(page, repo, true);
+			MCPackage pack = parser.parse();
+			mods.add(pack);
 		}
 		System.out.println("done");
 		//Deal with packages
