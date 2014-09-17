@@ -20,9 +20,10 @@ public class PageParser {
 	ArrayList<HashMap<String, String>> downloadOptions = new ArrayList<HashMap<String, String>>();
 
 	/**
-	 * @param page
-	 * @param repo
-	 * @param download
+	 * An object which downloads and parses a mod page, optionally downloading the mod.
+	 * @param page the URL for which the mod is located on on curseforge
+	 * @param repo the repository this mod should have as a parent
+	 * @param download whether or not to download the mod's jar file
 	 */
 	public PageParser(String page, Repository repo, boolean download) {
 		this.page = page;
@@ -30,6 +31,10 @@ public class PageParser {
 		this.download = download;
 	}
 
+	/**
+	 * Initiates the downloading and parsing of the mod
+	 * @return the MCPackage object for the parsed package
+	 */
 	public MCPackage parse() {
 		//Download the mod page.
 		site = ListCrawler.download(page);
@@ -42,13 +47,12 @@ public class PageParser {
 		parseHomepage();
 		parseTags();
 		parseAuthor();
+		parseLicense();
 
-		//Download the download page
-		//TODO: download download page
 		downloadDownloads();
 
-		parseSize();
-		parseVersion();
+		//TODO:  logic to decide what / which mod choices to download
+		parseDownload(0);
 
 		if (download)
 			downloadMod();
@@ -120,8 +124,15 @@ public class PageParser {
 	}
 
 	private void parseHomepage() {
-		
+		//Sadly, not sure we can do this :(
 	}
+
+	private void parseLicense() {
+		mod.setLicense(
+				site.select("[data-title=Project License] span").html(),
+				site.select("li a.modal-link truncate").attr("href") );
+	}
+
 ////////////////////////////////////////////////
 
 	private void downloadDownloads() {
@@ -141,12 +152,9 @@ public class PageParser {
 	}
 
 ////////////////////////////////////////////////
-	private void parseVersion() {
-		//Parse Version once decided which one
-	}
 
-	private void parseSize() {
-		//Parse Size
+	private void parseDownload(int num) {
+		
 	}
 
 	private void downloadMod() {
