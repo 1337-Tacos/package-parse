@@ -1,5 +1,8 @@
 package parser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -14,6 +17,7 @@ public class PageParser {
 	Document site;
 	Document siteDownload;
 	boolean download;
+	ArrayList<HashMap<String, String>> downloadOptions = new ArrayList<HashMap<String, String>>();
 
 	/**
 	 * @param page
@@ -122,6 +126,18 @@ public class PageParser {
 
 	private void downloadDownloads() {
 		this.siteDownload = ListCrawler.download(page + "/files");
+		Elements ele = siteDownload.select("tr.project-file-list-item");
+		for (Element e : ele) {
+			HashMap<String, String> downloadOption = new HashMap<String, String>();  
+			downloadOption.put("file", e.select("td.project-file-name div a").attr("href") );
+			downloadOption.put("size", e.select("td.project-file-size").html() );
+			downloadOption.put("date", e.select("td.project-file-date-uploaded abbr").html());
+			downloadOption.put("version", e.select("td.project-file-game-version span").html());
+			downloadOption.put("downloads", e.select("td.project-file-downloads").html());
+			downloadOption.put("release", e.select("td.project-file-release-type div").attr("title"));
+			//Add the Hashmap (downloadOption) to the list of downloadOptions
+			downloadOptions.add(downloadOption);
+		}
 	}
 
 ////////////////////////////////////////////////
