@@ -52,7 +52,7 @@ public class PageParser {
 		downloadDownloads();
 
 		//TODO:  logic to decide what / which mod choices to download
-		parseDownload(0);
+		mod = parseDownload(0);
 
 		if (download)
 			downloadMod();
@@ -153,12 +153,18 @@ public class PageParser {
 
 ////////////////////////////////////////////////
 
-	private void parseDownload(int num) {
-		
+	private MCPackage parseDownload(int num) {
+		HashMap<String, String> downloadOption = this.downloadOptions.get(num);
+		MCPackage pack = mod;
+		pack.setSize(downloadOption.get("size") );
+		//pack.setFileName
+		//Date
+		//Version
+		//Release?
 	}
 
-	private void downloadMod() {
-		//TODO:  download mod
-		//Parse FileName
+	private void downloadMod(String link, String dir) {
+		//TODO: Download (link + "/download") 
+		//TODO: Save to (dir)
 	}
 }
