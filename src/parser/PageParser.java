@@ -50,19 +50,36 @@ public class PageParser {
 		parseAuthor();
 		parseLicense();
 
-		downloadDownloads();
+		parseDownloadList();
 
-		//TODO:  logic to decide what / which mod choices to download
-		mod = parseDownload(0);
+		//Make a list of packages, each referring to a different download option.
+		ArrayList<MCPackage> options = new ArrayList<MCPackage>();
+		for (int i = 0; i < downloadOptions.size(); i++) {
+			MCPackage pack = parseDownload(i);
+			options.add(pack);
+		}
 
-		if (download)
-			downloadMod();
+		ArrayList<MCPackage> choosen = new ArrayList<MCPackage>();
+		//Choose the latest option of each release type, for each version.
+		//TODO: See checkContains Below.
 
-		//Now, make sure that we have at least the bare minimum information.
+		//download any that we need to download
+		for (MCPackage pack : choosen) {
+			if (download)
+				downloadMod(pack.getFileName(), "/mods");
+		}
+
+		//Now, make sure that we have at least the bare minimum information for each mod.
 		if (mod.checkValidity())
 			return mod;
 		else
 			return null;
+	}
+
+	private MCPackage checkContains(String lol, ArrayList<MCPackage> list) {
+		
+		//only return null if we don't find any:
+		return null;
 	}
 
 	private void parseDescription() {
@@ -125,7 +142,7 @@ public class PageParser {
 	}
 
 	private void parseHomepage() {
-		//Sadly, not sure we can do this :(
+		//Sadly, not sure we can do this automatically:(
 	}
 
 	private void parseLicense() {
@@ -134,9 +151,11 @@ public class PageParser {
 				site.select("li a.modal-link truncate").attr("href") );
 	}
 
-////////////////////////////////////////////////
+	/******************************************
+	 *          Download download list
+	 *****************************************/
 
-	private void downloadDownloads() {
+	private void parseDownloadList() {
 		this.siteDownload = ListCrawler.download(page + "/files");
 		Elements ele = siteDownload.select("tr.project-file-list-item");
 		for (Element e : ele) {
@@ -152,16 +171,24 @@ public class PageParser {
 		}
 	}
 
-////////////////////////////////////////////////
+	/******************************************
+	 *            After downloadList
+	 *****************************************/
 
 	private MCPackage parseDownload(int num) {
-		HashMap<String, String> downloadOption = this.downloadOptions.get(num);
-		MCPackage pack = mod;
-		pack.setSize(Integer.parseInt(downloadOption.get("size")) );
-		//TODO: downloadOption.get("file");
-		//TODO: downloadOption.get("date");
-		pack.setVersion(downloadOption.get("version") );
-		pack.setReleaseType(downloadOption.get("release") );
+		if (downloadOptions.size() >= num + 1) {
+			//TODO: Not sure about size index starting at 0 or not.
+			HashMap<String, String> downloadOption = this.downloadOptions.get(num);
+			MCPackage pack = mod;
+			pack.setSize(Integer.parseInt(downloadOption.get("size")) );
+			//TODO: downloadOption.get("file");
+			//TODO: downloadOption.get("date");
+			pack.setVersion(downloadOption.get("version") );
+			pack.setReleaseType(downloadOption.get("release") );
+			
+			return pack;
+		} else
+			return null;
 	}
 
 	private void downloadMod(String link, String dir) {
