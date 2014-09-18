@@ -36,7 +36,7 @@ public class PageParser {
 	 * Initiates the downloading and parsing of the mod
 	 * @return the MCPackage object for the parsed package
 	 */
-	public ArrayList<MCPackage> parse() {
+	public ArrayList<MCPackage> parse(String wantedTypes) {
 		//Download the mod page.
 		site = ListCrawler.download(page);
 
@@ -60,20 +60,24 @@ public class PageParser {
 		}
 
 		ArrayList<MCPackage> choosen = new ArrayList<MCPackage>();
-		//Choose the latest option of each release type, for each version.
-		//TODO: See checkContains Below.
-
-		//download any that we need to download
-		for (MCPackage pack : choosen) {
-			if (download)
-				downloadMod(pack.getFileName(), "/mods");
+		if (wantedTypes == "all")
+			choosen = options;
+		else if (wantedTypes == "one") {
+			//TODO: choose one package fitting each release type
+			//and return those only.
+			//See checkContains Below.
 		}
 
-		//Now, make sure that we have at least the bare minimum information for each mod.
-		if (mod.checkValidity())
-			return mod;
-		else
-			return null;
+		for (MCPackage pack : choosen) {
+			//download any that we need to download
+			if (download)
+				downloadMod(pack.getFileName(), "/mods", pack);
+			//If any of the packs are not complete, remove it from our list of choosen mods.
+			if (pack.checkValidity() != true)
+				choosen.remove(pack);
+		}
+
+		return choosen;
 	}
 
 	private MCPackage checkContains(String lol, ArrayList<MCPackage> list) {
@@ -191,8 +195,9 @@ public class PageParser {
 			return null;
 	}
 
-	private void downloadMod(String link, String dir) {
+	private void downloadMod(String link, String dir, MCPackage pack) {
 		//TODO: Download (link)
 		//TODO: Save to (dir)
+		//TODO: Update filename in (pack)
 	}
 }
