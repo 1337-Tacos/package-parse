@@ -27,8 +27,8 @@ public class Manager {
 		for (String page : pages) {
 			//TODO:  make downloading optional
 			PageParser parser = new PageParser(page, repo, true);
-			MCPackage pack = parser.parse();
-			mods.add(pack);
+			ArrayList<MCPackage> packs = parser.parse();
+			mods.addAll(packs);
 		}
 		System.out.println("done");
 		//Deal with packages

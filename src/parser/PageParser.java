@@ -1,6 +1,7 @@
 package parser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.jsoup.nodes.Document;
@@ -35,7 +36,7 @@ public class PageParser {
 	 * Initiates the downloading and parsing of the mod
 	 * @return the MCPackage object for the parsed package
 	 */
-	public MCPackage parse() {
+	public ArrayList<MCPackage> parse() {
 		//Download the mod page.
 		site = ListCrawler.download(page);
 
@@ -140,7 +141,7 @@ public class PageParser {
 		Elements ele = siteDownload.select("tr.project-file-list-item");
 		for (Element e : ele) {
 			HashMap<String, String> downloadOption = new HashMap<String, String>();  
-			downloadOption.put("file", e.select("td.project-file-name div a").attr("href") );
+			downloadOption.put("file", e.select("td.project-file-name div a").attr("href") + "/download");
 			downloadOption.put("size", e.select("td.project-file-size").html() );
 			downloadOption.put("date", e.select("td.project-file-date-uploaded abbr").html());
 			downloadOption.put("version", e.select("td.project-file-game-version span").html());
@@ -156,15 +157,15 @@ public class PageParser {
 	private MCPackage parseDownload(int num) {
 		HashMap<String, String> downloadOption = this.downloadOptions.get(num);
 		MCPackage pack = mod;
-		pack.setSize(downloadOption.get("size") );
-		//pack.setFileName
-		//Date
-		//Version
-		//Release?
+		pack.setSize(Integer.parseInt(downloadOption.get("size")) );
+		//TODO: downloadOption.get("file");
+		//TODO: downloadOption.get("date");
+		pack.setVersion(downloadOption.get("version") );
+		pack.setReleaseType(downloadOption.get("release") );
 	}
 
 	private void downloadMod(String link, String dir) {
-		//TODO: Download (link + "/download") 
+		//TODO: Download (link)
 		//TODO: Save to (dir)
 	}
 }
