@@ -1,7 +1,6 @@
 package parser;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import org.jsoup.nodes.Document;
@@ -49,6 +48,7 @@ public class PageParser {
 		parseTags();
 		parseAuthor();
 		parseLicense();
+		parseLogo();
 
 		parseDownloadList();
 
@@ -68,22 +68,17 @@ public class PageParser {
 			//See checkContains Below.
 		}
 
+		ArrayList<MCPackage> newChoosen = choosen;
 		for (MCPackage pack : choosen) {
 			//download any that we need to download
 			if (download)
 				downloadMod(pack.getFileName(), "/mods", pack);
-			//If any of the packs are not complete, remove it from our list of choosen mods.
+			//If any of the packs are not complete, remove it from our list of chosen mods.
 			if (pack.checkValidity() != true)
-				choosen.remove(pack);
+				choosen.remove(newChoosen);
 		}
 
-		return choosen;
-	}
-
-	private MCPackage checkContains(String lol, ArrayList<MCPackage> list) {
-		
-		//only return null if we don't find any:
-		return null;
+		return newChoosen;
 	}
 
 	private void parseDescription() {
@@ -99,11 +94,10 @@ public class PageParser {
 	}
 
 	private void parseLogo() {
-		Elements ele = site.select("div.avatar-wrapper");
-		for (Element e : ele)
-			//TODO:  logo download
-			//We need to download the mod's image, since they will be fetched from the repo itself.
-			ele = null;	
+		String ele = site.select("div.avatar-wrapper a").attr("href");
+		//TODO:  logo download
+		//We need to download the mod's image, since they will be fetched from the repo itself.
+		mod.setLogo(ele);
 	}
 
 	/**
@@ -184,9 +178,9 @@ public class PageParser {
 			//TODO: Not sure about size index starting at 0 or not.
 			HashMap<String, String> downloadOption = this.downloadOptions.get(num);
 			MCPackage pack = mod;
-			pack.setSize(Integer.parseInt(downloadOption.get("size")) );
+			//TODO: pack.setSize(Integer.parseInt(downloadOption.get("size")) );
 			//TODO: downloadOption.get("file");
-			//TODO: downloadOption.get("date");
+			pack.setReleaseDate(downloadOption.get("date") );
 			pack.setVersion(downloadOption.get("version") );
 			pack.setReleaseType(downloadOption.get("release") );
 			

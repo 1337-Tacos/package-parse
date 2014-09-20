@@ -25,7 +25,7 @@ public class ListCrawler {
 		for (int i = 1; i < numPages; i++) {
 			Elements mods = download("http://minecraft.curseforge.com/mc-mods?filter-sort=popularity&page=" + i).select(".e-avatar64 ");
 			for (Element mod: mods) {
-				pages.add(mod.attr("href"));
+				pages.add("http://minecraft.curseforge.com" + mod.attr("href"));
 			}
 		}
 		return pages;
@@ -41,7 +41,7 @@ public class ListCrawler {
 	}
 	
 	public static Document download(String page) {
-		Document doc = new Document("lol?");
+		Document doc = new Document(page);
 		try {
 			doc = Jsoup.connect(page).get();
 		} catch (IOException e) {
